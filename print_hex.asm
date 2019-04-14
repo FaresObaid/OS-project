@@ -1,43 +1,39 @@
-; Prints the value of DX as hex.
+; dx has the hex to print
 print_hex:
-  pusha             ; save the register values to the stack for later
 
-  mov cx,4          ; Start the counter: we want to print 4 characters
-                    ; 4 bits per char, so we're printing a total of 16 bits
+    pusha
+    mov bx, HEX_OUT + 5
 
-char_loop:
-  dec cx            ; Decrement the counter
+loop_digits:
 
-  mov ax,dx         ; copy bx into ax so we can mask it for the last chars
-  shr dx,4          ; shift bx 4 bits to the right
-  and ax,0xf        ; mask ah to get the last 4 bits
+    mov cl, dl
+    and cl, 0x0f            ; has the digit as number
+    call hexdigit_to_ascii
+    mov [bx], cl            ; move it to the address
+    shr dx, 4               ; shift to get the next digit in lower 8bit dx
 
-  mov bx, HEX_OUT   ; set bx to the memory address of our string
-  add bx, 2         ; skip the '0x'
-  add bx, cx        ; add the current counter to the address
+    dec bx                  ; go to next address to but next charactar in
+    cmp dx, 0               ; if dx is zero then we are done
+    jne loop_digits
 
-  cmp ax,0xa        ; Check to see if it's a letter or number
-  jl set_letter     ; If it's a number, go straight to setting the value
-  add byte [bx],7   ; If it's a letter, add 7
-                    ; Why this magic number? ASCII letters start 17
-                    ; characters after decimal numbers. We need to cover that
-                    ; distance. If our value is a 'letter' it's already
-                    ; over 10, so we need to add 7 more.
-  jl set_letter
+    mov bx, HEX_OUT         ; move to the begining of hex string dec will work too
+    call print_string
 
-set_letter:
-  add byte [bx],al  ; Add the value of the byte to the char at bx
+    popa
+    ret
 
-  cmp cx,0          ; check the counter, compare with 0
-  je print_hex_done ; if the counter is 0, finish
-  jmp char_loop     ; otherwise, loop again
+; cl has hex digit to convert
+; result is ascii char in cl
+hexdigit_to_ascii:
+    cmp cl, 0x9  ; test if the digit <= 9
+    jle then
+    sub cl, 0xA  ; make it index in the alpha (A=10 -> 0 = 'A')
+    add cl, 0x61 ; it's a letter so add 'a' to it to make it ascii letter
+    jmp end
+then:
+    add cl, 0x30 ; it's a digit so make it a digit
+end:
+    ret
 
-print_hex_done:
-  mov bx, HEX_OUT   ; print the string pointed to by bx
-  call print_string
-
-  popa              ; pop the initial register values back from the stack
-  ret               ; return the function
-
-; global variables
-HEX_OUT: db '0x0000',0
+; global var
+HEX_OUT: db '0x0000', 0

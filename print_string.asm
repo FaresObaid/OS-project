@@ -1,17 +1,18 @@
-print_string:     ; Push registers onto the stack
-  pusha
+; bx has the address of the string
+print_string:
+        push ax
+        push bx
 
-string_loop:
-  mov al, [bx]    ; Set al to the value at bx
-  cmp al, 0       ; Compare the value in al to 0 (check for null terminator)
-  jne print_char  ; If it's not null, print the character at al
-                  ; Otherwise the string is done, and the function is ending
+        mov ah, 0x0E
 
-  popa            ; Pop all the registers back onto the stack
-  ret             ; return execution to where we were
+loop:   mov al, [bx]     ; move the character to al to be printed
+        int 0x10
+        inc bx           ; move to the next address holding the next character
+        cmp byte [bx], 0 ; see if next character is null
+        jne loop         ; if it's not null continue printing
 
-print_char:
-  mov ah, 0x0e    ; Linefeed printing
-  int 0x10        ; Print character
-  add bx, 1       ; Shift bx to the next character
-  jmp string_loop ; go back to the beginning of our loop
+        pop bx
+        pop ax
+        ret
+
+NEWLINE: db 0xA, 0xD, 0
