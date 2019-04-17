@@ -15,7 +15,7 @@ disk_load:
   jc disk_error   ; Jump if error ( i.e. carry flag set )
 
   pop dx          ; Restore DX from the stack
-  
+
   cmp dh, al      ; if AL ( sectors read ) != DH ( sectors expected )
   jne disk_error  ; display error message
   ret
@@ -26,5 +26,4 @@ disk_error:
   jmp $
 
 ; Variables
-DISK_ERROR_MSG:
-  db "Disk read error !", 0
+DISK_ERROR_MSG db "Disk read error !\n", 0

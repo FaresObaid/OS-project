@@ -27,9 +27,9 @@ call print_string
 
 jmp $
 
-%include "disk_load.asm"    ; Include our new disk_load function
-%include "print_string.asm" ; Re - use our print_string function
-%include "print_hex.asm"    ; Re - use our print_hex function
+%include "../disk_load.asm"    ; Include our new disk_load function
+%include "../print/print_string.asm" ; Re - use our print_string function
+%include "../print/print_hex.asm"    ; Re - use our print_hex function
 
 ; Global variables
 BOOT_DRIVE: db 0

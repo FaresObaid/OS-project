@@ -25,6 +25,7 @@ loop_digits:
 ; cl has hex digit to convert
 ; result is ascii char in cl
 hexdigit_to_ascii:
+
     cmp cl, 0x9  ; test if the digit <= 9
     jle then
     sub cl, 0xA  ; make it index in the alpha (A=10 -> 0 = 'A')
