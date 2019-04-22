@@ -3,7 +3,7 @@
 
 switch_to_pm:
 cli 	; We must switch of interrupts until we have
-		  ; set -up the protected mode interrupt vector
+		  ; set-up the protected mode interrupt vector
 		  ; otherwise interrupts will run riot.
 
 lgdt [gdt_descriptor] 	; Load our global descriptor table, which defines

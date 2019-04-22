@@ -1,5 +1,9 @@
 ; load DH sectors to ES : BX from drive DL
 disk_load:
+
+  mov ah, 0x0     ; reset disk system
+  int 0x13
+
   push dx         ; Store DX on stack so later we can recall
                   ; how many sectors were request to be read ,
                   ; even if it is altered in the meantime
@@ -26,4 +30,4 @@ disk_error:
   jmp $
 
 ; Variables
-DISK_ERROR_MSG db "Disk read error !\n", 0
+DISK_ERROR_MSG db "Disk read error !", 0xA, 0xD, 0

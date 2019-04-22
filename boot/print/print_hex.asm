@@ -37,4 +37,4 @@ end:
     ret
 
 ; global var
-HEX_OUT: db '0x0000', 0
+HEX_OUT db '0x0000', 0
